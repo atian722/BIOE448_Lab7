@@ -1,8 +1,8 @@
 #include "thingProperties.h"
 int sensor_pin = 0;
 int pulse_signal = 0;
-int upper_threshold = 1000; //or your threshold of choice
-int lower_threshold = 5; //or your threshold of choice
+int upper_threshold = 815; //or your threshold of choice
+int lower_threshold = 770; //or your threshold of choice
 int counter = 0;
 
 //float bPM = 0.0;
