@@ -1,8 +1,8 @@
 #include "thingProperties.h"
 int sensor_pin = 0;
 int pulse_signal = 0;
-int upper_threshold = 860; //or your threshold of choice
-int lower_threshold = 800; //or your threshold of choice
+int upper_threshold = 1000; //or your threshold of choice
+int lower_threshold = 5; //or your threshold of choice
 int counter = 0;
 
 //float BPM = 0.0;
@@ -17,6 +17,7 @@ void setup() {
   // put your setup code here, to run once:
   delay(1500);
   initProperties();
+  Serial.begin(9600);
   
   //Connect to cloud and get info/errors
   ArduinoCloud.begin(ArduinoIoTPreferredConnection);
@@ -32,5 +33,36 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+  pulse_signal = analogRead(sensor_pin);
+  //Serial.println(pulse_signal);
+  delay(100);
 
+  if (pulse_signal > upper_threshold && any_peak_detected ==
+  false) {
+  any_peak_detected = true;
+  // Do something about this peak
+    if (first_peak_detected == false) {
+      first_pulse_time = millis();
+      first_peak_detected = true;
+    } 
+    else {
+      second_pulse_time = millis();
+      pulse_period = second_pulse_time - first_pulse_time;
+      first_peak_detected = false;
+
+      BPM = 60000/pulse_period;
+       Serial.println(BPM);
+    }
+  }
+
+  if (pulse_signal < lower_threshold) {
+  any_peak_detected = false;
+  }
+
+  counter++;
+  if (counter > 200){
+    ArduinoCloud.update();
+    Serial.println(BPM);
+    counter = 0;
+  }
 }
