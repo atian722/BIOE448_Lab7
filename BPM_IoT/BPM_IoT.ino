@@ -8,7 +8,8 @@ int counter = 0;
 //float BPM = 0.0;
 
 bool ignore = false;
-bool first_pulse_detected = false;
+bool first_peak_detected = false;
+bool any_peak_detected = false;
 unsigned long first_pulse_time = 0;
 unsigned long second_pulse_time = 0;
 unsigned long pulse_period = 0;
@@ -35,29 +36,29 @@ void loop() {
   // put your main code here, to run repeatedly:
   pulse_signal = analogRead(sensor_pin);
   //Serial.println(pulse_signal);
-  delay(100);
 
-  if (pulse_signal > upper_threshold && any_peak_detected ==
-  false) {
-  any_peak_detected = true;
-  // Do something about this peak
+  // Find leading edge of heart beat
+  if (pulse_signal > upper_threshold && any_peak_detected == false) {
     if (first_peak_detected == false) {
       first_pulse_time = millis();
       first_peak_detected = true;
-    } 
-    else {
+    } else {
       second_pulse_time = millis();
       pulse_period = second_pulse_time - first_pulse_time;
-      first_peak_detected = false;
-
-      BPM = 60000/pulse_period;
-       Serial.println(BPM);
+      first_pulse_time = second_pulse_time;
     }
+    any_peak_detected = true;
   }
 
+  //Find trailing edge
   if (pulse_signal < lower_threshold) {
-  any_peak_detected = false;
+    any_peak_detected = false;
   }
+
+  BPM = (1.0 / pulse_period) * 60.0 * 1000;
+  Serial.println(BPM);
+
+  delay(50);
 
   counter++;
   if (counter > 200){
