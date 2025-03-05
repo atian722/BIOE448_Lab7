@@ -5,7 +5,7 @@ int upper_threshold = 1000; //or your threshold of choice
 int lower_threshold = 5; //or your threshold of choice
 int counter = 0;
 
-//float BPM = 0.0;
+//float bPM = 0.0;
 
 bool ignore = false;
 bool first_peak_detected = false;
@@ -55,15 +55,15 @@ void loop() {
     any_peak_detected = false;
   }
 
-  BPM = (1.0 / pulse_period) * 60.0 * 1000;
-  Serial.println(BPM);
+  bPM = (1.0 / pulse_period) * 60.0 * 1000;
+  Serial.println(bPM);
 
   delay(50);
 
   counter++;
   if (counter > 200){
     ArduinoCloud.update();
-    Serial.println(BPM);
+    Serial.println(bPM);
     counter = 0;
   }
 }
